@@ -10,6 +10,7 @@ creates a corresponding lexeme file for the source code file.
 #include <string>
 #include <vector>
 #include <fstream>
+#include <cstdlib>
 #include <map>
 using namespace std;
 
@@ -20,17 +21,12 @@ private:
 	vector<string> tokens;
 	map<string, string> tokenmap;
 
-	string l, t;
-
-	void enterPairFile()
-	{
-
-	}
-
 public:
 
 	LexAnalyzer(ifstream& infile)
 	{
+		string l, t;
+
 		while (!infile.eof())
 		{
 			infile >> t;
@@ -40,18 +36,45 @@ public:
 			lexemes.push_back(l);
 		}
 
-		for (int i = 0; i < 5; i++)
+		for (int i = 0; i < lexemes.size(); i++)
 		{
 			tokenmap[lexemes.at(i)] = tokens.at(i);
 		}
+
+		tokens.clear();
+		lexemes.clear();
 	}
 
 	void scanFile(istream& infile, ostream& outfile)
 	{
 
 	}
-};
 
+	void readLine(ifstream& infile)
+	{
+		string line;
+		string letter;
+		string temp;
+
+		while (getline(infile, line))
+		{
+			for (unsigned i = 0; i < line.length(); i++)
+			{
+				letter = line.at(i);
+				temp.append(letter);
+
+				for (auto it = tokenmap.begin(); it != tokenmap.end(); ++it)
+				{
+					cout << it->first << " => " << it->second << endl;
+					if (it->first.compare(temp) == 0)
+					{
+						cerr << "MATCH FOUND!"; //Test to see if loop finds match to source
+					}
+				}
+			}
+		}
+	}
+};
 
 int main()
 {
@@ -59,6 +82,7 @@ int main()
 	ifstream pairs;
 	ifstream input;
 	ofstream output;
+
 	//cout << "Enter the name of the token/lexeme pairs file (_____.txt): "; //UNCOMMENT LATER
 	//cin >> txt; //UNCOMMENT LATER
 	txt = "tokenlexemedata.txt"; //JUST FOR NOW //DELETE LATER
@@ -97,6 +121,7 @@ int main()
 		exit(1);
 	}
 
+	la.readLine(input);
 	la.scanFile(input, output);
 
 	return (0);
