@@ -22,19 +22,27 @@ private:
 
 	string l, t;
 
+	void enterPairFile()
+	{
+
+	}
+
 public:
 
-	LexAnalyzer(istream& infile)
+	LexAnalyzer(ifstream& infile)
 	{
 		while (!infile.eof())
 		{
+			infile >> t;
+			tokens.push_back(t);
+
 			infile >> l;
 			lexemes.push_back(l);
-			cout << l << " ";
+		}
 
-			infile >> t;
-			lexemes.push_back(t);
-			cout << t << endl;
+		for (int i = 0; i < 5; i++)
+		{
+			tokenmap[lexemes.at(i)] = tokens.at(i);
 		}
 	}
 
@@ -48,10 +56,26 @@ public:
 int main()
 {
 	string txt;
+	ifstream pairs;
 	ifstream input;
+	ofstream output;
 	//cout << "Enter the name of the token/lexeme pairs file (_____.txt): "; //UNCOMMENT LATER
 	//cin >> txt; //UNCOMMENT LATER
 	txt = "tokenlexemedata.txt"; //JUST FOR NOW //DELETE LATER
+
+	pairs.open(txt);
+
+	if (pairs.fail())
+	{
+		cerr << "Error: File Not Found" << endl;
+		exit(1);
+	}
+
+	LexAnalyzer la(pairs);
+
+	//cout << "Enter the name of the source code file (_____.txt): "; //UNCOMMENT LATER
+	//cin >> txt; //UNCOMMENT LATER
+	txt = "sourcecode.txt"; //JUST FOR NOW //DELETE LATER
 
 	input.open(txt);
 
@@ -61,7 +85,19 @@ int main()
 		exit(1);
 	}
 
-	new LexAnalyzer(input);
+	//cout << "Enter the name of the empty output file (_____.txt): "; //UNCOMMENT LATER
+	//cin >> txt; //UNCOMMENT LATER
+	txt = "outputcode.txt"; //JUST FOR NOW //DELETE LATER
+
+	output.open(txt);
+
+	if (output.fail())
+	{
+		cerr << "Error: File Not Found" << endl;
+		exit(1);
+	}
+
+	la.scanFile(input, output);
 
 	return (0);
 }
