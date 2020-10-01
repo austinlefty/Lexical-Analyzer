@@ -55,6 +55,7 @@ public:
 		string line;
 		string letter;
 		string temp;
+		int count = 0;
 
 		while (getline(infile, line))
 		{
@@ -69,10 +70,34 @@ public:
 					if (it->first.compare(temp) == 0)
 					{
 						cerr << "MATCH FOUND!"; //Test to see if loop finds match to source
+						if (temp == "main")
+							if (!isalpha(line.at(i + 1)) && (i < 4 || (line.at(i - 4) == ' ') && !isalpha(line.at(i - 4))))
+							{
+								addMain();
+
+								exit(1);
+							}
+							else
+								cout << "IDENTIFIER"; //TEST //DELETE LATER
 					}
 				}
 			}
 		}
+	}
+
+	void addMain()
+	{
+		tokens.push_back(tokenmap.find("main")->second);
+		lexemes.push_back("main");
+		for (int i = 0; i < lexemes.size(); i++)
+		{
+			cout << tokens.at(i) << " : " << lexemes.at(i) << endl;
+		}
+	}
+
+	void printPairs()
+	{
+		cout << tokenmap.find("t_main")->second << endl;
 	}
 };
 
@@ -123,6 +148,7 @@ int main()
 
 	la.readLine(input);
 	la.scanFile(input, output);
+	la.printPairs();
 
 	return (0);
 }
